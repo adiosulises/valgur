@@ -1,13 +1,30 @@
-import { ShopifyProduct, getProducts } from "@/lib/shopify";
+import { ShopifyProduct, ShopifyArticle, getProducts, getArticlesByBlogHandle } from "@/lib/shopify";
 import { PinkBanner } from "@/components/home/PinkBanner";
 import { ProductosDestacados } from "@/components/home/ProductosDestacados";
-import { ReleasesDestacados, mockRelease } from "@/components/home/ReleasesDestacados";
-import { YoutubeEmbed, mockEmbed } from "@/components/home/YoutubeEmbed";
+import { ReleasesDestacados } from "@/components/home/ReleasesDestacados";
+import { YoutubeEmbed } from "@/components/home/YoutubeEmbed";
 
 export default async function Home() {
 
-  const { body } = await getProducts();
-  const products: ShopifyProduct[] = body.data.products.edges.map((e) => e.node);
+
+  // getProducts para grid de productos destacados
+  const { body: productsBody } = await getProducts();
+  const products: ShopifyProduct[] = productsBody.data.products.edges.map((e) => e.node);
+
+  // getArticles para releases -> ordenar primero los de tag 'destacado'
+  const rawReleases = await getArticlesByBlogHandle('releases');
+  const hasDestacadoTag = (a: ShopifyArticle) => a.tags?.includes("destacado") ?? false;
+  const releases = [
+    ...rawReleases.filter(hasDestacadoTag),
+    ...rawReleases.filter((a) => !hasDestacadoTag(a)),
+  ];
+
+  // getArticles para videos musicales -> mostrar solo 1, randomizado, priorizando tags 'destacado'
+  const rawVideos = await getArticlesByBlogHandle('videos');
+  console.log("rawVideos:", rawVideos); 
+  const destacados = rawVideos.filter(hasDestacadoTag);
+  const videos = destacados.length > 0 ? destacados : rawVideos;
+  console.log("videos pool:", videos);
 
   return (
     <>
@@ -19,13 +36,13 @@ export default async function Home() {
       <PinkBanner/>
 
       {/* Musica/Releases */}
-      <ReleasesDestacados releases={mockRelease}/>
+      <ReleasesDestacados releases={releases}/>
 
       {/* Banner */}
       <PinkBanner/>
 
       {/* Video Destacado */}
-      <YoutubeEmbed videos={mockEmbed}/>
+      <YoutubeEmbed videos={videos}/>
 
     </>
   );

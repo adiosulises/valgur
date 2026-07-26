@@ -1,28 +1,23 @@
 "use client";
 
-import * as React from "react";
 import Link from "next/link";
 import type { ShopifyArticle } from "@/lib/shopify";
-
-export const mockEmbed: ShopifyArticle [] = [
-    {
-        contentHtml: 'https://www.youtube.com/watch?v=QrAH6mr6FXQ',
-        tags: [
-            'video-destacado'
-        ]
-    }
-]
+import { useState, useEffect } from "react"; 
 
 export function YoutubeEmbed({ videos }: { videos: ShopifyArticle [] }){
-  const video = videos.find((v) => v.tags?.includes("video-destacado"));
 
-  if (!video) {
-    console.log(videos)
-    return null;
-  }
+  const [video, setVideo] = useState<ShopifyArticle | null>(null);
+
+  useEffect(() => {
+    if (videos.length === 0) return;
+    setVideo(videos[Math.floor(Math.random() * videos.length)]);
+  }, [videos]);
+
+  if (!video) return null;
 
   const watchLink = video.contentHtml;
-  const embedLink = `https://www.youtube.com/embed/${watchLink?.split("v=")[1]}`;
+  const videoId = video.contentHtml?.match(/[?&]v=([\w-]{11})/)?.[1];
+  const embedLink = videoId ? `https://www.youtube.com/embed/${videoId}` : "";
   
 
   return (

@@ -448,6 +448,31 @@ export async function getArticleByHandle(blogHandle: string, articleHandle: stri
 
   return res.body.data?.blog ?? null;
 }
+export async function getArticlesByBlogHandle(
+  blogHandle: string,
+  count: number = 50,
+  cache: RequestCache = "force-cache"
+): Promise<ShopifyArticle[]> {
+  const query = `
+    query GetArticlesByBlogHandle($blogHandle: String!, $count: Int!) {
+      blog(handle: $blogHandle) {
+        handle
+        articles(first: $count) {
+          edges {
+            node { handle title contentHtml publishedAt tags image { url altText } }
+          }
+        }
+      }
+    }
+  `;
+  const res = await shopifyFetch<{
+    data: { blog: { handle: string; articles: { edges: { node: any }[] } } | null };
+  }>({ query, variables: { blogHandle, count }, cache });
+
+  const blog = res.body.data?.blog;
+  if (!blog) return [];
+  return blog.articles.edges.map((e) => ({ ...e.node, blogHandle: blog.handle }));
+}
 
 
 // Others
