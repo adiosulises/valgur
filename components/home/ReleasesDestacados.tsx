@@ -20,12 +20,22 @@ links: {
     tidal?: string | null;
 }
 }
+
+function htmlToText(html: string | null | undefined): string {
+  return (html ?? "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|li|span)>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&");   // so URL query params like ?a=1&b=2 survive
+}
+
 function parseReleases(articles: ShopifyArticle[]): Release[] {
   const field = (html: string, label: string) =>
     html.match(new RegExp(`${label}:[ \\t]*([^\\n]*)`))?.[1]?.trim() ?? "";
 
   return articles.map((article) => {
-    const html = article.contentHtml ?? "";
+    const html = htmlToText(article.contentHtml);
     return {
       images: {
         edges: article.image
@@ -53,6 +63,7 @@ export function ReleasesDestacados({ releases }: { releases: ShopifyArticle [] }
     const release = parsedReleases[index];
     const image = release.images.edges[0]?.node;
     const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+    
 
     const goPrev = () => setIndex((i) => (i - 1 + releases.length) % releases.length);
     const goNext = () => setIndex((i) => (i + 1) % releases.length);

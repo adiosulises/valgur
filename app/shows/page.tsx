@@ -1,10 +1,14 @@
-import { Showlist, mockShowlist } from "@/components/shows/Showlist";
+import { Showlist } from "@/components/shows/Showlist";
+import { getArticlesByBlogHandle } from "@/lib/shopify";
 
 
-export default function Shows() {
+export default async function Shows() {
+
+  const shows = await getArticlesByBlogHandle('shows');
+
   return (
     <> 
-      <Showlist shows={mockShowlist} />
+      <Showlist shows={shows} />
     </>
   );
 }

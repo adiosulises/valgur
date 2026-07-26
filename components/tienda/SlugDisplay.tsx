@@ -19,6 +19,12 @@ export function SlugDisplay({product} : {product : ShopifyProduct}){
         .filter((o) => o && o.value !== "Default Title")
         .map((o) => o.value);
 
+    const selectedVariant = product.variants.edges.find(
+    (e) => e.node.selectedOptions[0]?.value === talla
+    )?.node;
+    const displayPrice = selectedVariant?.price ?? product.priceRange.minVariantPrice;
+    const optionName = product.variants.edges[0]?.node.selectedOptions[0]?.name ?? "";
+
     return(
         <>
             <div className="grid grid-cols-2 px-[8%]">
@@ -38,7 +44,7 @@ export function SlugDisplay({product} : {product : ShopifyProduct}){
                 {/* Columna selectores */}
                 <div className="aspect-square flex flex-col justify-center gap-4 px-[8%]">
                     <h1 className="text-l font-bold uppercase">{product.title}</h1>
-                    <p>{formatPrice(product.priceRange.minVariantPrice)} MXN</p>
+                    <p>{formatPrice(displayPrice)} MXN</p>
                     {product.description && <p className="italic uppercase opacity-60">{product.description}</p>}
                     {sizes.length > 0 && (
                         <select
@@ -48,7 +54,7 @@ export function SlugDisplay({product} : {product : ShopifyProduct}){
                             aria-label="Talla"
                         >
                             <option value="" disabled hidden>
-                                SELECCIONAR TALLA
+                                SELECCIONAR {optionName.toUpperCase()}
                             </option>
                             {sizes.map((t) => (
                                 <option key={t} value={t} className="uppercase">

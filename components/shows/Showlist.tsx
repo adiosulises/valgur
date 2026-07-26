@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import Link from "next/link";
 import type { ShopifyArticle } from "@/lib/shopify";
 
@@ -12,6 +11,7 @@ type ParsedShow = {
   tickets: string;
   invitados: Guest[];
   agotado: boolean;
+  parsedFecha: Date;
 };
 
 function extract(html: string | null | undefined, label: string): string {
@@ -19,99 +19,59 @@ function extract(html: string | null | undefined, label: string): string {
   return m?.[1]?.trim() ?? "";
 }
 
-function parseShow(article: ShopifyArticle): ParsedShow {
-  const invitadoRaw = extract(article.contentHtml, "Invitado");
-
-  const invitados: Guest[] = invitadoRaw
-    ? invitadoRaw.split(",").map((g) => {
-        const parts = g.trim().split(/\s+/);
-        const symbol = parts.pop() ?? "";
-        return { name: parts.join(" "), symbol };
-      })
-    : [];
-
-  return {
-    ubicacion: extract(article.contentHtml, "Ubicacion"),
-    fecha: extract(article.contentHtml, "Fecha"),
-    tickets: extract(article.contentHtml, "Tickets"),
-    invitados,
-    agotado: extract(article.contentHtml, "Estatus") === "Agotado",
-  };
+function htmlToText(html: string | null | undefined): string {
+  return (html ?? "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|li)>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/gi, " ");
 }
 
-export const mockShowlist: ShopifyArticle [] = [
-    {
-        blogTitle: 'Shows',
-        title: 'Guadalajara, JAL.',
-        contentHtml: 
-        `
-            Ubicacion: Guadalajara, JAL.
-            Fecha: 28.06.2026
-            Tickets: www.boleteo.com/valgur-guadalajara-28-06-2026 
-            Invitado:
-            Estatus: Agotado
-        `,
-        tags: [
-            'tour-2026'
-        ]
-    },
-    {
-        blogTitle: 'Shows',
-        title: 'Morelia, MIC.',
-        contentHtml: 
-        `
-            Ubicacion: Morelia, MIC.
-            Fecha: 3.7.2026
-            Tickets: www.boleteo.com/valgur-morelia-03-07-2026 
-            Invitado:
-            Estatus: Agotado
-        `,
-        tags: [
-            'tour-2026'
-        ]
-    },
-    {
-        blogTitle: 'Shows',
-        title: 'Zamora, MIC.',
-        contentHtml: 
-        `
-            Ubicacion: Zamora, MIC.
-            Fecha: 4.07.2026
-            Tickets: www.boleteo.com/valgur-zamora-04-07-2026 
-            Invitado:
-            Estatus: Disponible
-        `,
-        tags: [
-            'tour-2026'
-        ]
-    },
-    {
-        blogTitle: 'Shows',
-        title: 'Guatemala',
-        contentHtml: 
-        `
-            Ubicacion: Guatemala
-            Fecha: 07.8.2026
-            Tickets: www.boleteo.com/valgur-guatemala-07-08-2026 
-            Invitado: Malcriada ✱
-            Estatus: Disponible
-        `,
-        tags: [
-            'tour-2026'
-        ]
-    }
+function parseFecha(fecha: string): Date {
+  const [d, m, y] = fecha.split(".").map(Number);
+  return new Date(y, m - 1, d);   // month is 0-indexed
+}
 
-]
+function parseShow(article: ShopifyArticle): ParsedShow[] { 
+  const text = htmlToText(article.contentHtml);
+  const blocks = text.split(/(?=Ubicacion:)/i).filter((b) => /Ubicacion:/i.test(b));
+
+  return blocks.map((block) => { // *
+    const invitadoRaw = extract(block, "Invitado");
+
+    const invitados: Guest[] = invitadoRaw
+      ? invitadoRaw.split(",").map((g) => {
+            const [name, symbol] = g.split("-").map((s) => s.trim());
+            return { name: name ?? "", symbol: symbol ?? "" };
+        })
+      : [];
+
+    return {
+      ubicacion: extract(block, "Ubicacion"),
+      fecha: extract(block, "Fecha"),
+      tickets: extract(block, "Tickets"),
+      invitados,
+      agotado: extract(block, "Estatus") === "Agotado",
+      parsedFecha: parseFecha(extract(block, "Fecha")),
+    };
+  });
+}
 
 export function Showlist({ shows }: { shows: ShopifyArticle [] }){
 
     const parsed = shows
-    .filter((s) => s.tags?.includes("tour-2026"))
-    .map(parseShow);
+    .flatMap(parseShow);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const upcoming = parsed
+    .filter((s) => s.parsedFecha >= today)
+    .sort((a, b) => a.parsedFecha.getTime() - b.parsedFecha.getTime());
 
     const guests = [
     ...new Map(
-      parsed.flatMap((p) => p.invitados).map((g) => [g.symbol + g.name, g])
+      upcoming.flatMap((p) => p.invitados).map((g) => [g.symbol + g.name, g])
     ).values(),
   ];
 
@@ -119,7 +79,7 @@ export function Showlist({ shows }: { shows: ShopifyArticle [] }){
     <>
     <div className="flex flex-col flex-1 w-full">
         <div className="flex flex-col px-[8%] py-12">
-        {parsed.map((show, i) => {
+        {upcoming.map((show, i) => {
             const strike = show.agotado ? "line-through" : "";
             const href = show.tickets.startsWith("http")
             ? show.tickets
