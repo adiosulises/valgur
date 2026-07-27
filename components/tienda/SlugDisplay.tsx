@@ -36,13 +36,14 @@ export function SlugDisplay({product} : {product : ShopifyProduct}){
                                 src={edge.node.url}
                                 alt={edge.node.altText || product.title}
                                 fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
                                 className="object-contain"
                             />
                         </div>
                     ))}
                 </div>
                 {/* Columna selectores */}
-                <div className="aspect-square flex flex-col justify-center gap-4 px-[8%]">
+                <div className="aspect-square flex flex-col justify-center sticky top-0 self-start gap-4 px-[8%]">
                     <h1 className="text-l font-bold uppercase">{product.title}</h1>
                     <p>{formatPrice(displayPrice)} MXN</p>
                     {product.description && <p className="italic uppercase opacity-60">{product.description}</p>}
