@@ -42,8 +42,8 @@ function parseReleases(articles: ShopifyArticle[]): Release[] {
           ? [{ node: { url: article.image.url, altText: article.image.altText ?? "" } }]
           : [],
       },
-      title: field(html, "Title") || (article.title ?? ""),
-      year: field(html, "Year"),
+      title: field(html, "Titulo") || (article.title ?? ""),
+      year: field(html, "Fecha"),
       links: {
         spotify: field(html, "Spotify") || null,
         bandcamp: field(html, "Bandcamp") || null,
