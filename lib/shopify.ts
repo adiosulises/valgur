@@ -6,11 +6,13 @@ const accessToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 export async function shopifyFetch<T>({
   query,
   variables,
-  cache = 'force-cache'
+  cache = 'force-cache',
+  revalidate
 }: {
   query: string;
   variables?: Record<string, unknown>;
   cache?: RequestCache;
+  revalidate?: number;
 }): Promise<{ status: number; body: T }> {
   const endpoint = `https://${domain}/api/2024-01/graphql.json`;
 
@@ -22,8 +24,10 @@ export async function shopifyFetch<T>({
         'X-Shopify-Storefront-Access-Token': accessToken!,
       },
       body: JSON.stringify({ query, variables }),
-      cache,
-      next: cache === 'force-cache' ? { revalidate: 3600 } : undefined
+      cache: revalidate !== undefined ? undefined : cache,
+      next: revalidate !== undefined
+        ? { revalidate }
+        : cache === 'force-cache' ? { revalidate: 3600 } : undefined
     });
 
     return {
@@ -31,6 +35,12 @@ export async function shopifyFetch<T>({
       body: await result.json()
     };
   } catch (error) {
+    // Next.js throws this internally to bail a route out of static
+    // rendering (e.g. cache: "no-store"); it's not a real API failure.
+    const digest = (error as { digest?: string })?.digest;
+    if (typeof digest === 'string' && digest.startsWith('DYNAMIC_SERVER_USAGE')) {
+      throw error;
+    }
     console.error('Error reaching Shopify Storefront API:', error);
     throw {
       error,
@@ -200,7 +210,7 @@ export async function getProducts(cursor?: string) {
         }
       }
     }`,
-    cache: "no-store"
+    revalidate: 60
   });
 }
 export async function getProductsByTag(tag: string) {
@@ -261,7 +271,7 @@ export async function getProductsByTag(tag: string) {
         }
       }
     }`,
-    cache: 'no-store'
+    revalidate: 60
   });
 }
 export function productHasPriceRange(product: ShopifyProduct): boolean {
