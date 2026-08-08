@@ -86,16 +86,16 @@ export function Showlist({ shows }: { shows: ShopifyArticle [] }){
             : `https://${show.tickets}`;
 
             return (
-            <div key={i} className="text-xl flex items-center justify-between py-2">
-                <span className={strike}>
+            <div key={i} className="text-[clamp(0.75rem,4vw,1.25rem)] flex items-center justify-between py-2">
+                <span className={`${strike} whitespace-nowrap`}>
                 <span className="inline-block w-28">{show.fecha}</span>
                 {show.ubicacion}
                 {show.invitados.map((g) => ` ${g.symbol}`).join("")}
                 </span>
                 {show.agotado ? (
-                    <span className="text-[#0000EE] line-through">Tickets</span>
+                    <span className="text-[#0000EE] line-through shrink-0">Tickets</span>
                     ) : (
-                    <Link href={href} target="_blank" rel="noopener noreferrer" className="text-[#0000EE] underline">
+                    <Link href={href} target="_blank" rel="noopener noreferrer" className="text-[#0000EE] underline shrink-0">
                         Tickets
                     </Link>
                 )}
@@ -114,7 +114,7 @@ export function Showlist({ shows }: { shows: ShopifyArticle [] }){
         )}
         
         </div>
-        <div className="text-right text-[#0000EE] font-bold underline flex flex-row items-center justify-end gap-4 px-[8%] py-8 mt-auto">
+        <div className="text-[clamp(0.6rem,3vw,1rem)] text-right text-[#0000EE] font-bold underline flex flex-row items-center justify-end gap-2 md:gap-4 px-[8%] py-8 mt-auto whitespace-nowrap">
             <a href="/bio">Contacto</a>
             <a href="/bio">Booking US / EU</a>
             <a href="/bio">Booking MX / Latam</a>
