@@ -70,10 +70,10 @@ export function ReleasesDestacados({ releases }: { releases: ShopifyArticle [] }
 
     return(
         <>
-            <div className="w-full flex flex-col px-[8%] py-6 gap-4">
+            <div className="w-full flex flex-col px-[4%] md:px-[8%] py-6 gap-4">
                 <h1 className="text-2xl">MÚSICA ‧₊˚♪ 𝄞₊ ♫ ˚⊹</h1>
-                <div className="flex flex-row overflow-hidden justify-between">
-                    <div className="relative h-172 w-172">
+                <div className="flex flex-col md:flex-row overflow-hidden justify-between gap-4">
+                    <div className="relative w-full aspect-square md:h-172 md:w-172">
                     <Image 
                         src={image?.url ?? ""}
                         alt={image?.altText ?? release.title ?? ""}

@@ -21,16 +21,17 @@ export function YoutubeEmbed({ videos }: { videos: ShopifyArticle [] }){
   
 
   return (
-    <div className="video-responsive flex flex-col items-center py-12">
+    <div className="video-responsive flex flex-col items-center py-12 w-full px-[4%] md:px-[8%]">
+    <div className="w-full max-w-[853px] aspect-video">
     <iframe
-      width="853"
-      height="480"
       src={`${embedLink}`}
+      className="w-full h-full"
       frameBorder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowFullScreen
       title="Embedded youtube"
     />
+    </div>
     <Link 
         href={`${watchLink}`} 
         className="text-[#0000EE] underline py-8"

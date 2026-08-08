@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { SlugDisplay } from "@/components/tienda/SlugDisplay";
+import { PinkBanner } from "@/components/home/PinkBanner";
 import { ShopifyProduct, getProduct } from "@/lib/shopify";
 
 interface PageProps {
@@ -20,6 +21,9 @@ export default async function Item({ params }: PageProps) {
   return (
     <>
       <SlugDisplay product={product}/>
+      <div className="py-4">
+        <PinkBanner transparent />
+      </div>
     </>
   );
 }
