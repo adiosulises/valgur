@@ -15,10 +15,10 @@ export function YoutubeEmbed({ videos }: { videos: ShopifyArticle [] }){
 
   if (!video) return null;
 
-  const watchLink = video.contentHtml;
   const videoId = video.contentHtml?.match(/[?&]v=([\w-]{11})/)?.[1];
   const embedLink = videoId ? `https://www.youtube.com/embed/${videoId}` : "";
-  
+  const watchLink = videoId ? `https://www.youtube.com/watch?v=${videoId}` : "";
+
 
   return (
     <div className="video-responsive flex flex-col items-center py-12 w-full px-[4%] md:px-[8%]">
