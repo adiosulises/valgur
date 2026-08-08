@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
-const DESIGNS = [
-  "(✿˶◕‿◕˶人◕ᴗ◕✿)",
-  "ଘ( ੭*ˊᵕˋ)੭ * ੈ ♡  ‧₊˚",
-  "౨ৎ⋆ ｡⋆𐙚⋆.˚₊⊹♡",
-  "ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧",
-];
+import designs from "@/lib/designs.json";
 
 
 export function PinkBanner({ transparent = false }: { transparent?: boolean }) {
@@ -15,7 +9,12 @@ export function PinkBanner({ transparent = false }: { transparent?: boolean }) {
     const [i, setI] = useState(0);
 
     useEffect(() => {
-    const id = setInterval(() => setI((n) => (n + 1) % DESIGNS.length), 3000);
+    const id = setInterval(() => setI((prev) => {
+        if (designs.length < 2) return prev;
+        let n = prev;
+        do { n = Math.floor(Math.random() * designs.length); } while (n === prev);
+        return n;
+    }), 800);
     return () => clearInterval(id);
     }, []);
 
@@ -24,14 +23,14 @@ export function PinkBanner({ transparent = false }: { transparent?: boolean }) {
             {/* Desktop */}
             <div className="hidden md:block overflow-hidden">
                 <div className="flex w-max animate-[marquee_20s_linear_infinite] hover:[animation-play-state:paused] motion-reduce:animate-none">
-                    {[...DESIGNS, ...DESIGNS].map((d, i) => (
+                    {[...designs, ...designs].map((d, i) => (
                     <span key={i} className="px-8 whitespace-nowrap">{d}</span>
                     ))}
                 </div>
             </div>
             {/* Mobile */}
             <div className="flex md:hidden w-full justify-center items-center px-[4%] ">
-                <span className="transition-opacity duration-300">{DESIGNS[i]}</span>
+                <span className="transition-opacity duration-300">{designs[i]}</span>
             </div>
         </div>
     );

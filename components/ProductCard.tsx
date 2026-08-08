@@ -5,10 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShopifyProduct, productHasPriceRange } from "@/lib/shopify";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import designs from "@/lib/designs.json";
+
 
 export function ProductCard({product} : {product : ShopifyProduct}){
 
     const [isCartHovered, setIsCartHovered] = React.useState(false);
+    const [design, setDesign] = React.useState<string | null>(null);
+    
     const image = product.images.edges[0]?.node;
     const formatPrice = (price: { amount: string; currencyCode: string }) => 
     new Intl.NumberFormat("es-MX", {
@@ -20,7 +24,11 @@ export function ProductCard({product} : {product : ShopifyProduct}){
 
     return(
         <>
-            <Card className="border-hidden">
+            <Card 
+                className="border-hidden"
+                onMouseEnter={() => setDesign(designs[Math.floor(Math.random() * designs.length)])}
+                onMouseLeave={() => setDesign(null)}
+            >
                 <Link href={`/tienda/${product.handle}`} className="relative h-40 md:h-48 w-full overflow-hidden block">
                     {image ? (
                     <Image
@@ -36,7 +44,7 @@ export function ProductCard({product} : {product : ShopifyProduct}){
                     )}
                 </Link>
                  <CardContent>
-                    <CardTitle className="font-bold">{product.title}</CardTitle>
+                    <CardTitle className="font-bold">{design ?? product.title}</CardTitle>
                     {productHasPriceRange(product)
                         ? `${formatPrice(product.priceRange.minVariantPrice)} – ${formatPrice(product.priceRange.maxVariantPrice)}`
                         : formatPrice(product.variants.edges[0]?.node.price)}
