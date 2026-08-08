@@ -22,7 +22,7 @@ export function PinkBanner({ transparent = false }: { transparent?: boolean }) {
         <div className={`w-full h-[64px] py-4 text-2xl font-bold ${transparent ? "text-[#FF0084]" : "bg-[#FF0084] text-white"}`}>
             {/* Desktop */}
             <div className="hidden md:block overflow-hidden">
-                <div className="flex w-max animate-[marquee_20s_linear_infinite] hover:[animation-play-state:paused] motion-reduce:animate-none">
+                <div className="flex w-max animate-[marquee_50s_linear_infinite] hover:[animation-play-state:paused] motion-reduce:animate-none">
                     {[...designs, ...designs].map((d, i) => (
                     <span key={i} className="px-8 whitespace-nowrap">{d}</span>
                     ))}
