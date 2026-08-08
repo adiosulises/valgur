@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import cartIcon from "@/lib/vectors/cart.svg";
 import globeIcon from "@/lib/vectors/globe.svg";
+import { useCart } from "@/contexts/CartContext";
 
 const navLinks: { title: string; href: string }[] = [
   { title: "Inicio", href: "/" },
@@ -17,6 +18,7 @@ const navLinks: { title: string; href: string }[] = [
 export default function Navbar() {
 
   const [open, setOpen] = React.useState(false);
+  const { open: openCart } = useCart();
 
   React.useEffect(() => {
     if (!open) return;
@@ -56,7 +58,9 @@ export default function Navbar() {
           {/* Icons */}
           <div className="flex items-center gap-4">
             <Image src={globeIcon} alt="Language" width={20} height={20} />
-            <Image src={cartIcon} alt="Cart" width={20} height={20} />
+            <button type="button" onClick={openCart} aria-label="Abrir carrito" className="cursor-pointer">
+              <Image src={cartIcon} alt="Cart" width={20} height={20} />
+            </button>
           </div>
         </div>
 
@@ -80,7 +84,9 @@ export default function Navbar() {
             Valgur <span className="text-[0.6em] align-super">(mx)</span>
           </Link>
           <div className="justify-self-end">
-            <Image src={cartIcon} alt="Cart" width={20} height={20} />
+            <button type="button" onClick={openCart} aria-label="Abrir carrito" className="cursor-pointer">
+              <Image src={cartIcon} alt="Cart" width={20} height={20} />
+            </button>
           </div>
           
         </div>
