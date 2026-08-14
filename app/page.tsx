@@ -1,4 +1,5 @@
 import { ShopifyProduct, ShopifyArticle, getProducts, getArticlesByBlogHandle } from "@/lib/shopify";
+import { articlesToVinyls } from "@/lib/vinyl";
 import { PinkBanner } from "@/components/home/PinkBanner";
 import { ProductosDestacados } from "@/components/home/ProductosDestacados";
 import { ReleasesDestacados } from "@/components/home/ReleasesDestacados";
@@ -19,6 +20,9 @@ export default async function Home() {
     ...rawReleases.filter((a) => !hasDestacadoTag(a)),
   ];
 
+  // Vinyls (releases with a Buen Dia Records link) for the featured grid
+  const vinyls = articlesToVinyls(rawReleases);
+
   // getArticles para videos musicales -> mostrar solo 1, randomizado, priorizando tags 'destacado'
   const rawVideos = await getArticlesByBlogHandle('videos');
   console.log("rawVideos:", rawVideos); 
@@ -30,7 +34,7 @@ export default async function Home() {
     <>
 
       {/* Productos Destacados */}
-      <ProductosDestacados products={products}/>
+      <ProductosDestacados products={products} vinyls={vinyls}/>
       
       {/* Banner */}
       <PinkBanner/>

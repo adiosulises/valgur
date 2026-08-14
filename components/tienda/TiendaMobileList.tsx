@@ -1,24 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import { ProductCard } from "@/components/ProductCard";
-import { ShopifyProduct } from "@/lib/shopify";
+import { StoreCard } from "@/components/StoreCard";
+import { CardItem } from "@/lib/vinyl";
 
 const PAGE_SIZE = 4;
 
-export function TiendaMobileList({ products }: { products: ShopifyProduct[] }) {
+const keyOf = (item: CardItem) =>
+  item.kind === "product" ? item.product.handle : item.vinyl.handle;
+
+export function TiendaMobileList({ items }: { items: CardItem[] }) {
   const [page, setPage] = useState(0);
 
-  const totalPages = Math.max(1, Math.ceil(products.length / PAGE_SIZE));
-  const visibleProducts = products.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  const visibleItems = items.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   return (
     <>
       <div className="flex flex-col">
-        {visibleProducts.map((product, i) => (
-          <div key={product.handle}>
-            <ProductCard product={product} />
-            {i < visibleProducts.length - 1 && (
+        {visibleItems.map((item, i) => (
+          <div key={keyOf(item)}>
+            <StoreCard item={item} />
+            {i < visibleItems.length - 1 && (
               <div
                 className="h-px w-full"
                 style={{

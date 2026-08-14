@@ -1,27 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { ProductCard } from "@/components/ProductCard";
-import { ShopifyProduct } from "@/lib/shopify";
+import { StoreCard } from "@/components/StoreCard";
+import { CardItem } from "@/lib/vinyl";
+
+const keyOf = (item: CardItem) =>
+  item.kind === "product" ? item.product.handle : item.vinyl.handle;
 
 export function ProductGrid({
-  products,
+  items,
   maxGridHeight,
   hasPagination = false,
 }: {
-  products: ShopifyProduct[];
+  items: CardItem[];
   maxGridHeight?: number;
   hasPagination?: boolean;
 }) {
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [page, setPage] = useState(0);
 
   const columns = 4;
-  const pageSize = maxGridHeight ? columns * maxGridHeight : products.length;
-  const totalPages = Math.max(1, Math.ceil(products.length / pageSize));
-  const visibleProducts = hasPagination
-    ? products.slice(page * pageSize, (page + 1) * pageSize)
-    : products.slice(0, pageSize);
+  const pageSize = maxGridHeight ? columns * maxGridHeight : items.length;
+  const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+  const visibleItems = hasPagination
+    ? items.slice(page * pageSize, (page + 1) * pageSize)
+    : items.slice(0, pageSize);
 
   return (
     <>
@@ -30,8 +33,8 @@ export function ProductGrid({
         <div className="text-center py-20 text-[#757575]">Cargando...</div>
       ) : (
         <div className="grid grid-cols-4">
-          {visibleProducts.map((product) => (
-            <ProductCard key={product.handle} product={product} />
+          {visibleItems.map((item) => (
+            <StoreCard key={keyOf(item)} item={item} />
           ))}
         </div>
       )}

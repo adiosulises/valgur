@@ -4,28 +4,43 @@ import { useState } from "react";
 import { ProductGrid } from "../ProductGrid";
 import { TiendaMobileList } from "./TiendaMobileList";
 import { ShopifyProduct } from "@/lib/shopify";
+import { CardItem, Vinyl } from "@/lib/vinyl";
 
-
-export function TiendaProducts({ products }: { products: ShopifyProduct[] }){
+export function TiendaProducts({ products, vinyls }: { products: ShopifyProduct[]; vinyls: Vinyl[] }){
     const [filter, setFilter] = useState<string | null>(null);
 
     const filterMerch = () => setFilter((f) => (f === "merch" ? null : "merch"));
     const filterDiscos = () => setFilter((f) => (f === "discos" ? null : "discos"));
 
-    const filteredProducts = filter
-        ? products.filter((product) =>
-            product.collections?.edges.some((edge) => edge.node.title === filter)
-          )
-        : products;
+    // Merch = store products, Discos = article-derived vinyls
+    const allItems: CardItem[] = [
+        ...products.map((p) => ({ kind: "product" as const, product: p })),
+        ...vinyls.map((v) => ({ kind: "vinyl" as const, vinyl: v })),
+    ];
+
+    const filtered =
+        filter === "merch" ? allItems.filter((i) => i.kind === "product")
+        : filter === "discos" ? allItems.filter((i) => i.kind === "vinyl")
+        : allItems;
 
     return(
         <>
             <div className="font-bold w-full flex px-[2%] md:px-[8%] gap-4">
-                <button className="underline" type="button" onClick={filterMerch} aria-label="Merch">
+                <button
+                    className={`underline ${filter === "merch" ? "text-[#FF0084]" : ""}`}
+                    type="button"
+                    onClick={filterMerch}
+                    aria-label="Merch"
+                >
                     Merch
                 </button>
                 <span>/</span>
-                <button className="underline" type="button" onClick={filterDiscos} aria-label="Discos">
+                <button
+                    className={`underline ${filter === "discos" ? "text-[#FF0084]" : ""}`}
+                    type="button"
+                    onClick={filterDiscos}
+                    aria-label="Discos"
+                >
                     Discos
                 </button>
                 <button
@@ -42,7 +57,7 @@ export function TiendaProducts({ products }: { products: ShopifyProduct[] }){
                 <div className="hidden md:block">
                     <ProductGrid
                         key = {filter ?? "all"}
-                        products = {filteredProducts}
+                        items = {filtered}
                         maxGridHeight = {4}
                         hasPagination = {true}
                     />
@@ -50,7 +65,7 @@ export function TiendaProducts({ products }: { products: ShopifyProduct[] }){
 
                 {/* Mobile */}
                 <div className="md:hidden">
-                    <TiendaMobileList key={filter ?? "all"} products={filteredProducts} />
+                    <TiendaMobileList key={filter ?? "all"} items={filtered} />
                 </div>
             </div>
         </>
