@@ -28,6 +28,15 @@ export function CartSidebar() {
       trailingZeroDisplay: "stripIfInteger",
     }).format(parseFloat(price.amount));
 
+  const checkout = async () => {
+    const res = await fetch ("/api/checkout", {
+      method: "POST",
+      body: JSON.stringify({ items }),
+    });
+    const { url } = await res.json();
+    if (url) window.location.href=url;
+  }
+
   return (
     <>
       {/* Backdrop */}
@@ -106,6 +115,7 @@ export function CartSidebar() {
 
         <div className="p-4">
           <button
+            onClick={checkout}
             type="button"
             className="border bg-[#FF0084] text-white w-full px-4 py-2 font-['Times_New_Roman'] font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase"
           >
