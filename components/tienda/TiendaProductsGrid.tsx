@@ -5,6 +5,7 @@ import { ProductGrid } from "../ProductGrid";
 import { TiendaMobileList } from "./TiendaMobileList";
 import { ShopifyProduct } from "@/lib/shopify";
 import { CardItem, Vinyl } from "@/lib/vinyl";
+import { Dropdown } from "../ui/dropdown";
 
 export function TiendaProducts({ products, vinyls }: { products: ShopifyProduct[]; vinyls: Vinyl[] }){
     const [filter, setFilter] = useState<string | null>(null);
@@ -35,39 +36,16 @@ export function TiendaProducts({ products, vinyls }: { products: ShopifyProduct[
     return(
         <>
             <div className="font-bold w-full flex px-[2%] md:px-[8%] gap-4">
-                <div className="relative inline-block">
-                    <div className="flex items-center gap-2">
-                        <button
-                        type="button"
-                        onClick={() => setOpen((o) => !o)}
-                        className="flex items-center gap-2 cursor-pointer"
-                        >
-                        {label}
-                        <span className={`transition-transform ${open ? "rotate-180" : ""}`}>▼</span>
-                        </button>
-
-                        {filter && (
-                        <button
-                            type="button"
-                            onClick={() => { setFilter(null); setOpen(false); }}
-                            aria-label="Quitar filtros"
-                            className="text-xs cursor-pointer"
-                        >
-                            ✕
-                        </button>
-                        )}
-                    </div>
-                    {open && (
-                        <div className="absolute left-0 mt-1 z-10 bg-white border border-[#FF0084] w-48">
-                        <button type="button" onClick={() => { setFilter("merch"); setOpen(false); }}
-                            className="block w-full text-left px-4 py-2 whitespace-nowrap">
-                            Ropa
-                        </button>
-                        <button type="button" onClick={() => { setFilter("discos"); setOpen(false); }}
-                            className="block w-full text-left px-4 py-2 whitespace-nowrap">
-                            CDs / Vinilos
-                        </button>
-                        </div>
+                <div className="flex items-center gap-2">
+                    <Dropdown
+                        value={filter ?? ""}
+                        placeholder="Filtros"
+                        options={[{ value: "merch", label: "Ropa" }, { value: "discos", label: "CDs / Vinilos" }]}
+                        onChange={(v) => setFilter(v || null)}
+                    />
+                    {filter && (
+                        <button type="button" onClick={() => setFilter(null)} aria-label="Quitar filtros"
+                        className="text-xs cursor-pointer">✕</button>
                     )}
                 </div>
             </div>

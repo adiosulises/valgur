@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { ShopifyProduct } from "@/lib/shopify";
 import { useCart } from "@/contexts/CartContext";
+import { Dropdown } from "../ui/dropdown";
 
 export function SlugDisplay({product} : {product : ShopifyProduct}){
     const { addItem } = useCart();
@@ -136,40 +137,16 @@ export function SlugDisplay({product} : {product : ShopifyProduct}){
                     {product.description && <p className="italic uppercase opacity-60">{product.description}</p>}
                     {/* First option */}
                     {optionNames.length >= 1 && values1.length > 0 && (
-                        <select
-                            value={opt1}
-                            onChange={(e) => { setOpt1(e.target.value); setOpt2(""); }}
-                            className="border-b w-full px-0 py-1 uppercase cursor-pointer text-left"
-                            aria-label={optionNames[0]}
-                        >
-                            <option value="" disabled hidden>
-                                SELECCIONAR {optionNames[0]?.toUpperCase()}
-                            </option>
-                            {values1.map((v) => (
-                                <option key={v} value={v} className="uppercase">
-                                    {v}
-                                </option>
-                            ))}
-                        </select>
+                        <Dropdown full value={opt1} placeholder={`SELECCIONAR ${optionNames[0]?.toUpperCase() ?? ""}`}
+                        options={values1.map((v) => ({ value: v, label: v }))}
+                        onChange={(v) => { setOpt1(v); setOpt2(""); }} />
                     )}
 
                     {/* Second option (depends on first) */}
                     {optionNames.length > 1 && opt1 !== "" && (
-                        <select
-                            value={opt2}
-                            onChange={(e) => setOpt2(e.target.value)}
-                            className="border-b w-full px-0 py-1 uppercase cursor-pointer text-left"
-                            aria-label={optionNames[1]}
-                        >
-                            <option value="" disabled hidden>
-                                SELECCIONAR {optionNames[1]?.toUpperCase()}
-                            </option>
-                            {values2.map((v) => (
-                                <option key={v} value={v} className="uppercase">
-                                    {v}
-                                </option>
-                            ))}
-                        </select>
+                        <Dropdown full value={opt2} placeholder={`SELECCIONAR ${optionNames[1]?.toUpperCase() ?? ""}`}
+                        options={values2.map((v) => ({ value: v, label: v }))}
+                        onChange={(v) => { setOpt2(v) }} />
                     )}
                     <button
                         type="button"
