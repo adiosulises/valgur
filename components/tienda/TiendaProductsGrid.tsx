@@ -18,10 +18,14 @@ export function TiendaProducts({ products, vinyls }: { products: ShopifyProduct[
         ...vinyls.map((v) => ({ kind: "vinyl" as const, vinyl: v })),
     ];
 
+    const isDisco = (item: CardItem) =>
+    item.kind === "vinyl" ||
+    (item.kind === "product" && (item.product.tags?.includes("discos") ?? false));
+
     const filtered =
-        filter === "merch" ? allItems.filter((i) => i.kind === "product")
-        : filter === "discos" ? allItems.filter((i) => i.kind === "vinyl")
-        : allItems;
+    filter === "merch"  ? allItems.filter((i) => !isDisco(i))
+    : filter === "discos" ? allItems.filter(isDisco)
+    : allItems;
 
     return(
         <>

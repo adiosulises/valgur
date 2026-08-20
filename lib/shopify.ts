@@ -57,6 +57,7 @@ export type ShopifyProduct = {
   handle: string;
   description: string;
   availableForSale: boolean;
+  tags: string[];
   collections?: {
     edges: {
       node: {
@@ -124,6 +125,7 @@ export async function getProduct(handle: string) {
         handle
         description
         availableForSale
+        tags
         images(first: 10) {
           edges {
             node {
@@ -188,6 +190,7 @@ export async function getProducts(cursor?: string) {
             handle
             description
             availableForSale
+            tags
             images(first: 10) {
               edges {
                 node { url altText }
