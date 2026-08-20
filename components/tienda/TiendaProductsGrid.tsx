@@ -58,7 +58,7 @@ export function TiendaProducts({ products, vinyls }: { products: ShopifyProduct[
                         )}
                     </div>
                     {open && (
-                        <div className="absolute left-0 mt-1 z-10 bg-white border border-[#FF0084]">
+                        <div className="absolute left-0 mt-1 z-10 bg-white border border-[#FF0084] w-48">
                         <button type="button" onClick={() => { setFilter("merch"); setOpen(false); }}
                             className="block w-full text-left px-4 py-2 whitespace-nowrap">
                             Ropa
