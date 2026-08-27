@@ -1,5 +1,5 @@
 import { getProducts, getArticlesByBlogHandle, ShopifyProduct } from "@/lib/shopify";
-import { articlesToVinyls } from "@/lib/vinyl";
+import { getVinyls } from "@/lib/vinyl";
 import { TiendaProducts } from "@/components/tienda/TiendaProductsGrid";
 
 export default async function Tienda() {
@@ -7,7 +7,7 @@ export default async function Tienda() {
   const products: ShopifyProduct[] = body.data.products.edges.map((e) => e.node);
 
   const articles = await getArticlesByBlogHandle("releases");
-  const vinyls = articlesToVinyls(articles);
+  const vinyls = await getVinyls(articles);
 
   return <TiendaProducts products={products} vinyls={vinyls} />;
 }

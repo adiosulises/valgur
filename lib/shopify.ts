@@ -1,3 +1,6 @@
+// NOTE: Vinyl ("Discos") logic lives in lib/vinyl.ts — article-derived products
+// that pull live price/stock/images from Buen Dia Records (see getVinyls / fetchBuenDia).
+
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
 const accessToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 

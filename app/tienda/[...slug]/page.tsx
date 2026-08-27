@@ -4,7 +4,7 @@ import { VinylDisplay } from "@/components/tienda/VinylDisplay";
 import { PinkBanner } from "@/components/home/PinkBanner";
 import { Recomendados } from "@/components/tienda/Recomendados";
 import { getProduct, getProducts, getArticlesByBlogHandle } from "@/lib/shopify";
-import { articlesToVinyls } from "@/lib/vinyl";
+import { getVinyls } from "@/lib/vinyl";
 
 interface PageProps {
   params: Promise<{ slug: string[] }>;
@@ -18,7 +18,7 @@ export default async function Item({ params }: PageProps) {
   const product = body.data.product;
 
   const articles = await getArticlesByBlogHandle("releases");
-  const allVinyls = articlesToVinyls(articles);
+  const allVinyls = await getVinyls(articles);
 
   // Not a product? Try a vinyl (a "releases" article that has a Buen Dia Records link).
   const vinyl = product ? null : allVinyls.find((v) => v.handle === slug[0]) ?? null;
