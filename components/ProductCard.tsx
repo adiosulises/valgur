@@ -44,10 +44,12 @@ export function ProductCard({product} : {product : ShopifyProduct}){
                     )}
                 </Link>
                  <CardContent>
-                    <CardTitle className="font-bold">{design ?? product.title}</CardTitle>
-                    {productHasPriceRange(product)
-                        ? `${formatPrice(product.priceRange.minVariantPrice)} – ${formatPrice(product.priceRange.maxVariantPrice)}`
-                        : formatPrice(product.variants.edges[0]?.node.price)}
+                    <CardTitle className="font-bold text-[20px]">{design ?? product.title}</CardTitle>
+                    <p className="text-[20px]">
+                        {productHasPriceRange(product)
+                            ? `${formatPrice(product.priceRange.minVariantPrice)} – ${formatPrice(product.priceRange.maxVariantPrice)}`
+                            : formatPrice(product.variants.edges[0]?.node.price)}
+                    </p>
                  </CardContent>
             </Card>
         </>

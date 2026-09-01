@@ -11,9 +11,11 @@ type Release = {
 images: {edges: {node: {url: string; altText: string;};}[];};
 title: string;
 year: string;
+handle: string;
+buenDiaLink: string | null;
 links: {
     bandcamp?: string | null;
-    spotify?: string | null; 
+    spotify?: string | null;
     apple?: string | null;
     youtube?: string | null;
     deezer?: string | null;
@@ -44,6 +46,8 @@ function parseReleases(articles: ShopifyArticle[]): Release[] {
       },
       title: field(html, "Titulo") || (article.title ?? ""),
       year: field(html, "Fecha"),
+      handle: article.handle ?? "",
+      buenDiaLink: field(html, "Buen Dia Records") || null,
       links: {
         spotify: field(html, "Spotify") || null,
         bandcamp: field(html, "Bandcamp") || null,
@@ -97,7 +101,8 @@ export function ReleasesDestacados({ releases }: { releases: ShopifyArticle [] }
                                     </Link>
                                 </ul>
                         ))}
-                        <div className="items-center gap-4 mt-auto self-end">
+                        
+                        <div className="items-center flex gap-2 mt-auto self-end">
                             <button type="button" onClick={goPrev} aria-label="Previous release">
                                 <Image src={leftNav} alt="Left Arrow" width={20} height={20} />
                             </button>

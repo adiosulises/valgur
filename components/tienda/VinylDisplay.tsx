@@ -13,9 +13,9 @@ export function VinylDisplay({ vinyl }: { vinyl: Vinyl }) {
   return (
     <div className="flex flex-col md:grid md:grid-cols-2 px-[2%] md:px-[8%]">
       {/* Imágenes */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
         {/* Desktop: stack */}
-        <div className="hidden md:flex flex-col gap-4">
+        <div className="hidden md:flex flex-col gap-2">
           {images.map((src, i) => (
             <div key={src + i} className="relative w-full aspect-square">
               <Image src={src} alt={vinyl.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-contain" />
@@ -33,10 +33,10 @@ export function VinylDisplay({ vinyl }: { vinyl: Vinyl }) {
       </div>
 
       {/* Info */}
-      <div className="flex flex-col gap-4 md:aspect-square md:justify-center md:px-[8%]">
-        <h1 className="text-l font-bold uppercase">{vinyl.title}</h1>
+      <div className="flex flex-col gap-1 md:aspect-square md:justify-center md:sticky md:top-0 md:self-start md:px-[8%]">
+        <h1 className="text-[20px] font-bold uppercase">{vinyl.title}</h1>
         {vinyl.price && (
-          <p>
+          <p className="text-[20px]">
             Desde {formatPrice(vinyl.price)} MXN
           </p>
         )}
@@ -44,7 +44,7 @@ export function VinylDisplay({ vinyl }: { vinyl: Vinyl }) {
           href={vinyl.buenDiaLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="border bg-[#FF0084] text-white w-full px-4 py-2 font-['Times_New_Roman'] font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase text-center"
+          className="border bg-[#FF0084] text-white w-full px-4 py-2 font-['Times_New_Roman'] font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase text-center mt-2"
         >
           Ir a Buen Dia Records
         </a>

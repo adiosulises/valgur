@@ -90,10 +90,9 @@ export function CartSidebar() {
                 <div className="flex items-center justify-between">
                   <button
                     type="button"
-                    onClick={() => decrement(item.id)}
-                    disabled={item.quantity <= 1}
+                    onClick={() => (item.quantity <= 1 ? removeItem(item.id) : decrement(item.id))}
                     aria-label="Restar"
-                    className="px-2 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="px-2 cursor-pointer"
                   >
                     -
                   </button>
@@ -114,12 +113,25 @@ export function CartSidebar() {
         </div>
 
         <div className="p-4">
+          {items.length > 0 && (
+            <p className="flex justify-between uppercase mb-2">
+              <span className="font-normal">Total</span>
+              <span className="font-bold">
+                {formatPrice({
+                  amount: items
+                    .reduce((sum, i) => sum + parseFloat(i.price.amount) * i.quantity, 0)
+                    .toString(),
+                  currencyCode: items[0].price.currencyCode,
+                })}
+              </span>
+            </p>
+          )}
           <button
             onClick={checkout}
             type="button"
             className="border bg-[#FF0084] text-white w-full px-4 py-2 font-['Times_New_Roman'] font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase"
           >
-            Ir al pago
+            Checkout
           </button>
         </div>
       </aside>

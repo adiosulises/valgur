@@ -5,8 +5,8 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import cartIcon from "@/lib/vectors/cart.svg";
-import globeIcon from "@/lib/vectors/globe.svg";
 import { useCart } from "@/contexts/CartContext";
+import { LanguageDropdown } from "@/components/ui/language-dropdown";
 
 const navLinks: { title: string; href: string }[] = [
   { title: "Inicio", href: "/" },
@@ -18,7 +18,8 @@ const navLinks: { title: string; href: string }[] = [
 export default function Navbar() {
 
   const [open, setOpen] = React.useState(false);
-  const { open: openCart } = useCart();
+  const { open: openCart, items } = useCart();
+  const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
   React.useEffect(() => {
     if (!open) return;
@@ -57,9 +58,14 @@ export default function Navbar() {
           </ul>
           {/* Icons */}
           <div className="flex items-center gap-4">
-            <Image src={globeIcon} alt="Language" width={20} height={20} />
-            <button type="button" onClick={openCart} aria-label="Abrir carrito" className="cursor-pointer">
+            <LanguageDropdown />
+            <button type="button" onClick={openCart} aria-label="Abrir carrito" className="relative cursor-pointer">
               <Image src={cartIcon} alt="Cart" width={20} height={20} />
+              {itemCount > 0 && (
+                <span className="absolute -top-2 -right-2 flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full bg-[#FF0084] text-white text-[10px] leading-none font-bold">
+                  {itemCount}
+                </span>
+              )}
             </button>
           </div>
         </div>
@@ -83,9 +89,15 @@ export default function Navbar() {
             ">
             Valgur <span className="text-[0.6em] align-super">(mx)</span>
           </Link>
-          <div className="justify-self-end">
-            <button type="button" onClick={openCart} aria-label="Abrir carrito" className="cursor-pointer">
+          <div className="justify-self-end flex items-center gap-3">
+            <LanguageDropdown />
+            <button type="button" onClick={openCart} aria-label="Abrir carrito" className="relative cursor-pointer">
               <Image src={cartIcon} alt="Cart" width={20} height={20} />
+              {itemCount > 0 && (
+                <span className="absolute -top-2 -right-2 flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full bg-[#FF0084] text-white text-[10px] leading-none font-bold">
+                  {itemCount}
+                </span>
+              )}
             </button>
           </div>
           

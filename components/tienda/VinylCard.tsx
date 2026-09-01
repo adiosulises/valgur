@@ -34,9 +34,9 @@ export function VinylCard({ vinyl }: { vinyl: Vinyl }) {
         )}
       </Link>
       <CardContent>
-        <CardTitle className="font-bold uppercase">{design ?? vinyl.title}</CardTitle>
+        <CardTitle className="font-bold uppercase text-[20px]">{design ?? vinyl.title}</CardTitle>
         {vinyl.price && (
-          <p>
+          <p className="text-[20px]">
             {new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", trailingZeroDisplay: "stripIfInteger" }).format(parseFloat(vinyl.price))} MXN
           </p>
         )}
