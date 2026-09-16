@@ -55,12 +55,12 @@ export function CartSidebar() {
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+        <div className="flex-1 overflow-y-auto flex flex-col gap-4">
           {items.length === 0 ? (
             <p className="text-center opacity-60 py-8">{t("cart.empty")}</p>
           ) : (
             items.map((item) => (
-              <div key={item.id} className="flex flex-col gap-2">
+              <div key={item.id} className="flex flex-col gap-2 border-b-1 p-4 border-[#FF0084] w-full">
                 <div className="flex gap-3">
                   <div className="relative w-20 h-20 shrink-0">
                     {item.image && (
@@ -75,7 +75,7 @@ export function CartSidebar() {
                   </div>
                   <div className="flex flex-col">
                     <span className="font-bold uppercase">{item.title}</span>
-                    <span>{formatPrice(item.price)} {t("product.currency")}</span>
+                    <span>{formatPrice(item.price)}</span>
                     {item.size && (
                       <span className="uppercase opacity-60">{item.size}</span>
                     )}
@@ -114,9 +114,9 @@ export function CartSidebar() {
           )}
         </div>
 
-        <div className="p-4">
+        <div className="p-4 text-white bg-[#FF0084]">
           {items.length > 0 && (
-            <p className="flex justify-between uppercase mb-2">
+            <p className="flex justify-between uppercase mb-2 text-xl">
               <span className="font-normal">{t("cart.total")}</span>
               <span className="font-bold">
                 {formatPrice({
@@ -131,7 +131,7 @@ export function CartSidebar() {
           <button
             onClick={checkout}
             type="button"
-            className="border bg-[#FF0084] text-white w-full px-4 py-2 font-['Times_New_Roman'] font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase"
+            className="border text-[#FF0084] bg-white w-full px-4 py-2 font-['Times_New_Roman'] font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase"
           >
             {t("cart.checkout")}
           </button>

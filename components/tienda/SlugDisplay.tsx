@@ -155,7 +155,7 @@ export function SlugDisplay({product} : {product : ShopifyProduct}){
                 {/* Columna selectores */}
                 <div className="flex flex-col gap-1 md:aspect-square md:justify-center md:sticky md:top-0 md:self-start md:px-[8%]">
                     <h1 className="text-[20px] font-bold uppercase">{product.title}</h1>
-                    <p className="text-[20px]">{formatPrice(displayPrice)} {t("product.currency")}</p>
+                    <p className="text-[20px]">{formatPrice(displayPrice)}</p>
                     {product.description && <p className="italic uppercase opacity-60">{product.description}</p>}
                     {/* First option */}
                     {optionNames.length >= 1 && values1.length > 0 && (

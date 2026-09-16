@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import es from "@/messages/es.json";
 import en from "@/messages/en.json";
 
@@ -28,6 +29,7 @@ function resolve(messages: Messages, path: string): string {
 }
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [lang, setLangState] = useState<Lang>("ES");
 
   useEffect(() => {
@@ -38,6 +40,10 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const setLang = (next: Lang) => {
     setLangState(next);
     localStorage.setItem("lang", next);
+    // Also mirrored into a cookie: server components read this to pick the
+    // Shopify market/country context (@inContext), so prices switch too.
+    document.cookie = `lang=${next}; path=/; max-age=31536000; SameSite=Lax`;
+    router.refresh();
   };
 
   const t = (path: string, vars?: Record<string, string | number>) => {

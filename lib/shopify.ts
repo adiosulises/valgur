@@ -1,6 +1,10 @@
 // NOTE: Vinyl ("Discos") logic lives in lib/vinyl.ts — article-derived products
 // that pull live price/stock/images from Buen Dia Records (see getVinyls / fetchBuenDia).
 
+// Shopify Markets country context: which market's price/currency a product
+// query returns. Callers derive this from the "lang" cookie (see app pages).
+export type Country = "MX" | "US";
+
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
 const accessToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
 
@@ -119,9 +123,9 @@ export type ShopifyProductExternalVideo = {
 export type ShopifyProductMedia = ShopifyProductVideo | ShopifyProductExternalVideo;
 
 //            Product Functions
-export async function getProduct(handle: string) {
+export async function getProduct(handle: string, country: Country = "MX") {
   return shopifyFetch<{ data: { product: ShopifyProduct } }>({
-    query: `{
+    query: `query getProduct($country: CountryCode!) @inContext(country: $country) {
       product(handle: "${handle}") {
         id
         title
@@ -166,10 +170,11 @@ export async function getProduct(handle: string) {
           }
         }
       }
-    }`
+    }`,
+    variables: { country }
   });
 }
-export async function getProducts(cursor?: string) {
+export async function getProducts(cursor?: string, country: Country = "MX") {
   const afterClause = cursor ? `, after: "${cursor}"` : "";
 
   return shopifyFetch<{
@@ -180,7 +185,7 @@ export async function getProducts(cursor?: string) {
       };
     };
   }>({
-    query: `{
+    query: `query getProducts($country: CountryCode!) @inContext(country: $country) {
       products(first: 12${afterClause}) {
         pageInfo {
           hasNextPage
@@ -216,12 +221,13 @@ export async function getProducts(cursor?: string) {
         }
       }
     }`,
+    variables: { country },
     revalidate: 60
   });
 }
-export async function getProductsByTag(tag: string) {
+export async function getProductsByTag(tag: string, country: Country = "MX") {
   return shopifyFetch<{ data: { products: { edges: { node: ShopifyProduct }[] } } }>({
-    query: `{
+    query: `query getProductsByTag($country: CountryCode!) @inContext(country: $country) {
       products(first: 10, query: "tag:${tag}") {
         edges {
           node {
@@ -277,6 +283,7 @@ export async function getProductsByTag(tag: string) {
         }
       }
     }`,
+    variables: { country },
     revalidate: 60
   });
 }

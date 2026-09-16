@@ -5,6 +5,7 @@ import { PinkBanner } from "@/components/home/PinkBanner";
 import { Recomendados } from "@/components/tienda/Recomendados";
 import { getProduct, getProducts, getArticlesByBlogHandle } from "@/lib/shopify";
 import { getVinyls } from "@/lib/vinyl";
+import { getCountry } from "@/lib/market";
 
 interface PageProps {
   params: Promise<{ slug: string[] }>;
@@ -13,8 +14,9 @@ interface PageProps {
 export default async function Item({ params }: PageProps) {
 
   const { slug } = await params;
+  const country = await getCountry();
 
-  const { body } = await getProduct(slug[0]);
+  const { body } = await getProduct(slug[0], country);
   const product = body.data.product;
 
   const articles = await getArticlesByBlogHandle("releases");
@@ -27,7 +29,7 @@ export default async function Item({ params }: PageProps) {
     notFound();
   }
 
-  const { body: productsBody } = await getProducts();
+  const { body: productsBody } = await getProducts(undefined, country);
   const products = productsBody.data.products.edges
     .map((e) => e.node)
     .filter((p) => p.handle !== (product?.handle ?? ""));

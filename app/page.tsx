@@ -1,5 +1,6 @@
 import { ShopifyProduct, ShopifyArticle, getProducts, getArticlesByBlogHandle } from "@/lib/shopify";
 import { getVinyls } from "@/lib/vinyl";
+import { getCountry } from "@/lib/market";
 import { PinkBanner } from "@/components/home/PinkBanner";
 import { ProductosDestacados } from "@/components/home/ProductosDestacados";
 import { ReleasesDestacados } from "@/components/home/ReleasesDestacados";
@@ -7,9 +8,10 @@ import { YoutubeEmbed } from "@/components/home/YoutubeEmbed";
 
 export default async function Home() {
 
+  const country = await getCountry();
 
   // getProducts para grid de productos destacados
-  const { body: productsBody } = await getProducts();
+  const { body: productsBody } = await getProducts(undefined, country);
   const products: ShopifyProduct[] = productsBody.data.products.edges.map((e) => e.node);
 
   // getArticles para releases -> ordenar primero los de tag 'destacado'
