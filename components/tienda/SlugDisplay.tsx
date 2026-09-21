@@ -6,6 +6,7 @@ import { ShopifyProduct } from "@/lib/shopify";
 import { useCart } from "@/contexts/CartContext";
 import { KaomojiBurst } from "@/components/KaomojiBurst";
 import { useLocale } from "@/contexts/LocaleContext";
+import { formatPrice } from "@/lib/utils";
 
 const SIZE_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "2XL", "3XL", "XXXL", "4XL", "5XL"];
 
@@ -37,13 +38,6 @@ export function SlugDisplay({product} : {product : ShopifyProduct}){
 
     const [opt1, setOpt1] = useState("");
     const [opt2, setOpt2] = useState("");
-
-    const formatPrice = (price: { amount: string; currencyCode: string }) =>
-        new Intl.NumberFormat("es-MX", {
-            style: "currency",
-            currency: price.currencyCode,
-            trailingZeroDisplay: "stripIfInteger",
-        }).format(parseFloat(price.amount));
 
     // First-level values (distinct)
     const values1 = sortIfSize(optionNames[0], [
@@ -155,7 +149,7 @@ export function SlugDisplay({product} : {product : ShopifyProduct}){
                 {/* Columna selectores */}
                 <div className="flex flex-col gap-1 md:aspect-square md:justify-center md:sticky md:top-0 md:self-start md:px-[8%]">
                     <h1 className="text-[20px] font-bold uppercase">{product.title}</h1>
-                    <p className="text-[20px]">{formatPrice(displayPrice)}</p>
+                    <p className="text-[20px]">{formatPrice(displayPrice, { stripZeros: true })}</p>
                     {product.description && <p className="italic uppercase opacity-60">{product.description}</p>}
                     {/* First option */}
                     {optionNames.length >= 1 && values1.length > 0 && (

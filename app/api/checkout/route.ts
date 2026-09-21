@@ -1,6 +1,9 @@
+import { getCountry } from "@/lib/market";
+
 export async function POST(req: Request) {
 
     const { items } = await req.json();
+    const country = await getCountry();
     const lines = items.map((i: {id: string, quantity: number}) => ({
         merchandiseId: i.id,
         quantity: i.quantity,
@@ -14,13 +17,15 @@ export async function POST(req: Request) {
                 "X-Shopify-Storefront-Access-Token": process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!,
             },
             body: JSON.stringify({
-                query: `mutation cartCreate($input: CartInput!) {
+                query: `mutation cartCreate($input: CartInput!, $country: CountryCode!) @inContext(country: $country) {
                     cartCreate(input: $input) {
                         cart { checkoutUrl }
                         userErrors { field message }
                     }
                 }`,
-                variables: { input: { lines } },
+                // Same market the shopper browsed in, so checkout charges the
+                // prices/currency they saw instead of the store default.
+                variables: { input: { lines, buyerIdentity: { countryCode: country } }, country },
             }),
         }
     );

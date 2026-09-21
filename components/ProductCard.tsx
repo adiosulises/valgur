@@ -7,6 +7,7 @@ import { ShopifyProduct, productHasPriceRange } from "@/lib/shopify";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import designs from "@/lib/designs.json";
 import { useLocale } from "@/contexts/LocaleContext";
+import { formatPrice } from "@/lib/utils";
 
 
 export function ProductCard({product} : {product : ShopifyProduct}){
@@ -16,12 +17,6 @@ export function ProductCard({product} : {product : ShopifyProduct}){
     const [design, setDesign] = React.useState<string | null>(null);
     
     const image = product.images.edges[0]?.node;
-    const formatPrice = (price: { amount: string; currencyCode: string }) => 
-    new Intl.NumberFormat("es-MX", {
-      style: "currency",
-      currency: price.currencyCode,
-    }).format(parseFloat(price.amount));
-
     // const isOutOfStock = !product.availableForSale;
 
     return(

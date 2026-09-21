@@ -171,7 +171,8 @@ export async function getProduct(handle: string, country: Country = "MX") {
         }
       }
     }`,
-    variables: { country }
+    variables: { country },
+    revalidate: 60
   });
 }
 export async function getProducts(cursor?: string, country: Country = "MX") {
@@ -286,6 +287,29 @@ export async function getProductsByTag(tag: string, country: Country = "MX") {
     variables: { country },
     revalidate: 60
   });
+}
+// Current price of specific variants in a given market (used to reprice the
+// cart when the market changes). Never cached: it has to reflect the market now.
+export async function getVariantPrices(ids: string[], country: Country = "MX") {
+  const res = await shopifyFetch<{
+    data?: {
+      nodes: ({ id: string; price: { amount: string; currencyCode: string } } | null)[];
+    };
+  }>({
+    query: `query getVariantPrices($ids: [ID!]!, $country: CountryCode!) @inContext(country: $country) {
+      nodes(ids: $ids) {
+        ... on ProductVariant {
+          id
+          price { amount currencyCode }
+        }
+      }
+    }`,
+    variables: { ids, country },
+    cache: 'no-store'
+  });
+  return (res.body.data?.nodes ?? []).filter(
+    (n): n is { id: string; price: { amount: string; currencyCode: string } } => !!n?.id
+  );
 }
 export function productHasPriceRange(product: ShopifyProduct): boolean {
   const range = product.priceRange;

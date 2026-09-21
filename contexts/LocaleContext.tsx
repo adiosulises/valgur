@@ -28,21 +28,45 @@ function resolve(messages: Messages, path: string): string {
   return typeof value === "string" ? value : path;
 }
 
+// The "lang" cookie is the single source of truth: server components read it to
+// pick the Shopify market/country context (@inContext), so the UI language has
+// to follow the same value or the language and the prices can disagree.
+function readLangCookie(): Lang | null {
+  const match = document.cookie.match(/(?:^|;\s*)lang=(ES|EN)(?:;|$)/);
+  return match ? (match[1] as Lang) : null;
+}
+
+function writeLangCookie(lang: Lang) {
+  document.cookie = `lang=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+}
+
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [lang, setLangState] = useState<Lang>("ES");
 
   useEffect(() => {
-    const stored = localStorage.getItem("lang");
-    if (stored === "ES" || stored === "EN") setLangState(stored);
-  }, []);
+    const fromCookie = readLangCookie();
+    if (fromCookie) {
+      setLangState(fromCookie);
+      return;
+    }
+    // Legacy: the language used to be stored only in localStorage, so the
+    // server never saw it. Move it into the cookie (and re-render the server
+    // components with the right market) once, then drop the old value.
+    try {
+      const legacy = localStorage.getItem("lang");
+      localStorage.removeItem("lang");
+      if (legacy === "EN") {
+        writeLangCookie("EN");
+        setLangState("EN");
+        router.refresh();
+      }
+    } catch {}
+  }, [router]);
 
   const setLang = (next: Lang) => {
     setLangState(next);
-    localStorage.setItem("lang", next);
-    // Also mirrored into a cookie: server components read this to pick the
-    // Shopify market/country context (@inContext), so prices switch too.
-    document.cookie = `lang=${next}; path=/; max-age=31536000; SameSite=Lax`;
+    writeLangCookie(next);
     router.refresh();
   };
 

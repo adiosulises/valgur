@@ -4,6 +4,10 @@ import { useEffect } from "react";
 import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
 import { useLocale } from "@/contexts/LocaleContext";
+import { formatPrice as formatMoney } from "@/lib/utils";
+
+const formatPrice = (price: { amount: string; currencyCode: string }) =>
+  formatMoney(price, { stripZeros: true });
 
 export function CartSidebar() {
   const { t } = useLocale();
@@ -22,13 +26,6 @@ export function CartSidebar() {
       window.scrollTo(0, scrollY);
     };
   }, [isOpen]);
-
-  const formatPrice = (price: { amount: string; currencyCode: string }) =>
-    new Intl.NumberFormat("es-MX", {
-      style: "currency",
-      currency: price.currencyCode,
-      trailingZeroDisplay: "stripIfInteger",
-    }).format(parseFloat(price.amount));
 
   const checkout = async () => {
     const res = await fetch ("/api/checkout", {

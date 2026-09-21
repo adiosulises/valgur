@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect, useRef } from "react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export type CartItem = {
   id: string;
@@ -29,6 +30,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const { lang } = useLocale();
+  const itemsRef = useRef(items);
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
 
   useEffect(() => {
     const stored = localStorage.getItem("cart");
@@ -39,6 +45,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (loaded) localStorage.setItem("cart", JSON.stringify(items));
   }, [items, loaded]);
+
+  // Cart items keep the price they had when added (and are persisted), so
+  // reprice them in the current market when the language/market changes and when
+  // a saved cart loads. The server reads the market from the "lang" cookie.
+  useEffect(() => {
+    const ids = itemsRef.current.map((i) => i.id);
+    if (!loaded || ids.length === 0) return;
+    let ignore = false;
+    fetch("/api/cart-prices", { method: "POST", body: JSON.stringify({ ids }) })
+      .then((res) => res.json())
+      .then(({ prices }: { prices: { id: string; price: CartItem["price"] }[] }) => {
+        if (ignore || !prices?.length) return;
+        const byId = new Map(prices.map((p) => [p.id, p.price]));
+        setItems((prev) => prev.map((i) => ({ ...i, price: byId.get(i.id) ?? i.price })));
+      })
+      .catch(() => {});
+    return () => {
+      ignore = true;
+    };
+  }, [loaded, lang]);
 
   const addItem = (item: Omit<CartItem, "quantity">) => {
     setItems((prev) => {
