@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { ShopifyArticle } from "@/lib/shopify";
 import { useLocale } from "@/contexts/LocaleContext";
+import { useState } from "react";
 
 type Guest = { name: string; symbol: string };
 
@@ -33,7 +34,7 @@ function parseFecha(fecha: string): Date {
   return new Date(y, m - 1, d);   // month is 0-indexed
 }
 
-function parseShow(article: ShopifyArticle): ParsedShow[] { 
+function parseShow(article: ShopifyArticle): ParsedShow[] {
   const text = htmlToText(article.contentHtml);
   const blocks = text.split(/(?=Ubicacion:)/i).filter((b) => /Ubicacion:/i.test(b));
 
@@ -42,9 +43,9 @@ function parseShow(article: ShopifyArticle): ParsedShow[] {
 
     const invitados: Guest[] = invitadoRaw
       ? invitadoRaw.split(",").map((g) => {
-            const [name, symbol] = g.split("-").map((s) => s.trim());
-            return { name: name ?? "", symbol: symbol ?? "" };
-        })
+        const [name, symbol] = g.split("-").map((s) => s.trim());
+        return { name: name ?? "", symbol: symbol ?? "" };
+      })
       : [];
 
     return {
@@ -58,70 +59,90 @@ function parseShow(article: ShopifyArticle): ParsedShow[] {
   });
 }
 
-export function Showlist({ shows }: { shows: ShopifyArticle [] }){
+export function Showlist({ shows }: { shows: ShopifyArticle[] }) {
 
-    const { t } = useLocale();
-    const parsed = shows
+  const { t } = useLocale();
+  const parsed = shows
     .flatMap(parseShow);
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-    const upcoming = parsed
+  const upcoming = parsed
     .filter((s) => s.parsedFecha >= today)
     .sort((a, b) => a.parsedFecha.getTime() - b.parsedFecha.getTime());
 
-    const guests = [
+  const guests = [
     ...new Map(
       upcoming.flatMap((p) => p.invitados).map((g) => [g.symbol + g.name, g])
     ).values(),
   ];
 
+  const [toast, setToast] = useState<{ x: number; y: number } | null>(null);
+
+  const copy = (email: string) => (e: React.MouseEvent) => {
+    navigator.clipboard.writeText(email);
+    setToast({ x: e.clientX, y: e.clientY });
+    setTimeout(() => setToast(null), 1500);
+  };
+
+  const CONTACT_EMAIL = "valgurmusica@gmail.com";
+  const BOOKING_US_EMAIL = "merrick@groundcontroltouring.com";
+
   return (
     <>
-    <div className="flex flex-col flex-1 w-full">
+      <div className="flex flex-col flex-1 w-full">
         <div className="flex flex-col px-[8%] py-12">
-        {upcoming.map((show, i) => {
+          {upcoming.map((show, i) => {
             const strike = show.agotado ? "line-through" : "";
             const href = show.tickets.startsWith("http")
-            ? show.tickets
-            : `https://${show.tickets}`;
+              ? show.tickets
+              : `https://${show.tickets}`;
 
             return (
-            <div key={i} className="text-[clamp(0.75rem,4vw,1.25rem)] flex items-center justify-between py-2">
+              <div key={i} className="text-[clamp(0.75rem,4vw,1.25rem)] flex items-center justify-between py-2">
                 <span className={`${strike} whitespace-nowrap`}>
-                <span className="inline-block w-28">{show.fecha}</span>
-                {show.ubicacion}
-                {show.invitados.map((g) => ` ${g.symbol}`).join("")}
+                  <span className="inline-block w-28">{show.fecha}</span>
+                  {show.ubicacion}
+                  {show.invitados.map((g) => ` ${g.symbol}`).join("")}
                 </span>
                 {show.agotado ? (
-                    <span className="text-[#0000EE] line-through shrink-0">{t("shows.tickets")}</span>
-                    ) : (
-                    <Link href={href} target="_blank" rel="noopener noreferrer" className="text-[#0000EE] underline shrink-0">
-                        {t("shows.tickets")}
-                    </Link>
+                  <span className="text-[#0000EE] line-through shrink-0">{t("shows.tickets")}</span>
+                ) : (
+                  <Link href={href} target="_blank" rel="noopener noreferrer" className="text-[#0000EE] underline shrink-0">
+                    {t("shows.tickets")}
+                  </Link>
                 )}
-            </div>
+              </div>
             );
-        })}
+          })}
 
-        {guests.length > 0 && (
+          {guests.length > 0 && (
             <div className="pt-30">
-            {guests.map((g) => (
+              {guests.map((g) => (
                 <p key={g.symbol + g.name}>
-                {g.symbol} {t("shows.withGuest")} {g.name}
+                  {g.symbol} {t("shows.withGuest")} {g.name}
                 </p>
-            ))}
+              ))}
             </div>
-        )}
-        
+          )}
+
         </div>
         <div className="text-[clamp(0.6rem,3vw,1rem)] text-right text-[#0000EE] font-bold underline flex flex-row items-center justify-end gap-2 md:gap-4 px-[8%] py-8 mt-auto whitespace-nowrap">
-            <a href="/bio">{t("shows.contact")}</a>
-            <a href="/bio">{t("shows.bookingUsEu")}</a>
-            <a href="/bio">{t("shows.bookingMxLatam")}</a>
+          <button type="button" className="cursor-pointer" onClick={copy(CONTACT_EMAIL)}>{t("bio.contact")}</button>
+          <button type="button" className="cursor-pointer" onClick={copy(BOOKING_US_EMAIL)}>{t("bio.bookingUs")}</button>
+          <button type="button" className="cursor-pointer" onClick={copy(CONTACT_EMAIL)}>{t("bio.bookingMxLatam")}</button>
         </div>
-    </div>
+
+        {toast && (
+          <div
+            className="fixed z-[10001] border border-[#FF0084] bg-white text-[#FF0084] px-2 py-1 text-sm uppercase pointer-events-none"
+            style={{ left: toast.x + 10, top: toast.y - 10, transform: "translate(0, -100%)" }}
+          >
+            {t("bio.copied")}
+          </div>
+        )}
+      </div>
     </>
   );
 }
