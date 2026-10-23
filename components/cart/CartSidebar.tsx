@@ -128,7 +128,7 @@ export function CartSidebar() {
           <button
             onClick={checkout}
             type="button"
-            className="border text-[#FF0084] bg-white w-full px-4 py-2 font-['Times_New_Roman'] font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase"
+            className="border text-[#FF0084] bg-white w-full px-4 py-2 font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase"
           >
             {t("cart.checkout")}
           </button>

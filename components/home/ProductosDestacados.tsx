@@ -5,6 +5,7 @@ import { ProductCarousel } from "./ProductCarousel";
 import { ShopifyProduct } from "@/lib/shopify";
 import { CardItem, Vinyl } from "@/lib/vinyl";
 import { useLocale } from "@/contexts/LocaleContext";
+import { Butterflies } from "./Butterflies";
 
 export function ProductosDestacados({ products, vinyls }: { products: ShopifyProduct[]; vinyls: Vinyl[] }){
     const { t } = useLocale();
@@ -15,7 +16,8 @@ export function ProductosDestacados({ products, vinyls }: { products: ShopifyPro
 
     return(
         <>
-            <div className="w-full flex flex-col px-[4%] md:px-[8%] gap-4">
+            <div className="relative w-full flex flex-col px-[4%] md:px-[8%] gap-4 py-4">
+                <Butterflies />
                 <h1 className="text-lg md:text-2xl">{t("featured.heading")}</h1>
 
                 {/* Desktop */}

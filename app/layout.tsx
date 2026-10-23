@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Barlow } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -8,6 +9,15 @@ import { CartSidebar } from "@/components/cart/CartSidebar";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { TopProgress } from "@/components/TopProgress";
 import { CursorTrail } from "@/components/CursorTrail";
+
+// Open-source DIN-style webfont; the CSS font stack tries real DIN / Bahnschrift first.
+const barlow = Barlow({
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-barlow",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Valgur",
@@ -20,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={barlow.variable}>
       <head>
         <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

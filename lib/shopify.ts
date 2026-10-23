@@ -498,7 +498,8 @@ export async function getArticleByHandle(blogHandle: string, articleHandle: stri
 export async function getArticlesByBlogHandle(
   blogHandle: string,
   count: number = 50,
-  cache: RequestCache = "force-cache"
+  cache: RequestCache = "force-cache",
+  revalidate?: number
 ): Promise<ShopifyArticle[]> {
   const query = `
     query GetArticlesByBlogHandle($blogHandle: String!, $count: Int!) {
@@ -514,7 +515,7 @@ export async function getArticlesByBlogHandle(
   `;
   const res = await shopifyFetch<{
     data: { blog: { handle: string; articles: { edges: { node: any }[] } } | null };
-  }>({ query, variables: { blogHandle, count }, cache });
+  }>({ query, variables: { blogHandle, count }, cache, revalidate });
 
   const blog = res.body.data?.blog;
   if (!blog) return [];

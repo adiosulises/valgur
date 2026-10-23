@@ -51,7 +51,7 @@ export default function Navbar() {
   }, [open]);
 
   return (
-    <header className="w-full sticky top-0 z-40 bg-white">
+    <header className="w-full sticky top-0 z-40 bg-white border-b-1 border-[#FF0084]">
       <nav className="w-full px-[8%] py-4">
 
         {/* Desktop */}
@@ -65,7 +65,7 @@ export default function Navbar() {
             </li>
             {navLinks.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} className="text-xl font-medium hover:opacity-70 transition-opacity">
+                <Link href={link.href} className="text-xl hover:opacity-70 transition-opacity">
                   {link.title}
                 </Link>
               </li>

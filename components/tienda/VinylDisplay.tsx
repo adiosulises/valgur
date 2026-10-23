@@ -49,7 +49,7 @@ export function VinylDisplay({ vinyl }: { vinyl: Vinyl }) {
           href={vinyl.buenDiaLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="border bg-[#FF0084] text-white w-full px-4 py-2 font-['Times_New_Roman'] font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase text-center mt-2"
+          className="border bg-[#FF0084] text-white w-full px-4 py-2 font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase text-center mt-2"
         >
           {t("product.goToBuenDia")}
         </a>

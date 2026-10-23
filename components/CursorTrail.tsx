@@ -44,7 +44,7 @@ export function CursorTrail() {
     if (!ctx) return;
 
     const applyStyle = () => {
-      ctx.font = "16px 'Times New Roman', Times, serif";
+      ctx.font = `16px ${getComputedStyle(document.body).fontFamily}`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
     };
@@ -101,6 +101,15 @@ export function CursorTrail() {
         ctx.fillText(m.char, m.x, m.y);
       }
       marks.length = alive;
+
+      // Elements tagged data-trail-below sit "above" the trail: erase the trail beneath them.
+      // Clipped to below the sticky header so nothing is cut out of the trail over the navbar.
+      const headerBottom = document.querySelector("header")?.getBoundingClientRect().bottom ?? 0;
+      document.querySelectorAll<HTMLElement>("[data-trail-below]").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const top = Math.max(r.top, headerBottom);
+        if (r.bottom > top) ctx.clearRect(r.left, top, r.width, r.bottom - top);
+      });
 
       if (marks.length > 0) {
         raf = requestAnimationFrame(render);

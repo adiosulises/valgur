@@ -135,7 +135,7 @@ export function SlugDisplay({product} : {product : ShopifyProduct}){
                         </div>
                         {/* Mobile: image counter */}
                         {product.images.edges.length > 0 && (
-                            <div className="absolute bottom-2 right-2 font-['Times_New_Roman'] font-bold text-[20px] leading-none tracking-normal">
+                            <div className="absolute bottom-2 right-2 font-bold text-[20px] leading-none tracking-normal">
                                 {current + 1}/{product.images.edges.length}
                             </div>
                         )}
@@ -222,7 +222,7 @@ export function SlugDisplay({product} : {product : ShopifyProduct}){
                             type="button"
                             onClick={handleAdd}
                             disabled={!canAdd}
-                            className="border bg-[#FF0084] text-white w-full px-4 py-2 font-['Times_New_Roman'] font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="border bg-[#FF0084] text-white w-full px-4 py-2 font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {t("product.addToCart")}
                         </button>

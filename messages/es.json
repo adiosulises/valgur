@@ -52,6 +52,8 @@
     "prevRelease": "Anterior",
     "nextRelease": "Siguiente",
     "leftArrowAlt": "Flecha izquierda",
+    "playerTitle": "Reproductor de Bandcamp",
+    "listenOn": "Escuchar en",
     "rightArrowAlt": "Flecha derecha"
   },
   "youtube": {
@@ -92,6 +94,9 @@
     "spanish": "Español",
     "english": "English",
     "selectLanguage": "Seleccionar idioma"
+  },
+  "hero": {
+    "latest": "Último lanzamiento"
   },
   "meta": {
     "title": "Valgur",
