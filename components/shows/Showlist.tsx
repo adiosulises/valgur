@@ -93,6 +93,9 @@ export function Showlist({ shows }: { shows: ShopifyArticle[] }) {
     <>
       <div className="flex flex-col flex-1 w-full">
         <div className="flex flex-col px-[8%] py-12">
+          {upcoming.length === 0 && (
+            <p className="text-[clamp(0.75rem,4vw,1.25rem)]">{t("shows.noShows")}</p>
+          )}
           {upcoming.map((show, i) => {
             const strike = show.agotado ? "line-through" : "";
             const href = show.tickets.startsWith("http")

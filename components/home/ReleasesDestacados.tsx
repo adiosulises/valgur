@@ -78,33 +78,34 @@ export function ReleasesDestacados({ releases }: { releases: ShopifyArticle [] }
         <>
             <div className="w-full flex flex-col px-[4%] md:px-[8%] py-6 gap-4">
                 <h1 className="text-2xl">{t("music.heading")}</h1>
-                <div className="flex flex-col md:flex-row overflow-hidden justify-between gap-4">
-                    <div className="relative w-full aspect-square md:h-172 md:w-172">
-                    <Image 
+                <div className="flex flex-col md:flex-row md:items-start gap-8">
+                    <div className="relative w-full aspect-square md:w-172 md:min-w-0 md:shrink">
+                    <Image
                         src={image?.url ?? ""}
                         alt={image?.altText ?? release.title ?? ""}
                         fill
                         className="object-contain"
                     />
                     </div>
-                    <div className="flex flex-col items-start">
-                        <h1 className="text-2xl font-bold">{release.title} - {release.year}</h1>
-                        {Object.entries(release.links)
-                            .filter(([, url]) => url !== null)
-                            .map(([platform, url]) => (
-                                <ul>
-                                    <Link 
-                                        key={platform} 
-                                        href={url as string} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer" 
-                                        className="text-[#0000EE] text-xl underline">
-                                        {capitalize(platform)}
-                                    </Link>
-                                </ul>
-                        ))}
-                        
-                        <div className="items-center flex gap-4 mt-auto self-end">
+                    <div className="flex flex-col gap-4 text-start min-h-80 md:w-80 md:shrink-0 md:self-stretch">
+                        <h1 className="text-2xl font-bold break-words">{release.title} - {release.year}</h1>
+                        <ul className="flex flex-col">
+                            {Object.entries(release.links)
+                                .filter(([, url]) => url !== null)
+                                .map(([platform, url]) => (
+                                    <li key={platform}>
+                                        <Link
+                                            href={url as string}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-[#0000EE] text-xl underline">
+                                            {capitalize(platform)}
+                                        </Link>
+                                    </li>
+                            ))}
+                        </ul>
+
+                        <div className="flex items-center justify-end gap-4 mt-auto w-full text-end">
                             <button type="button" onClick={goPrev} aria-label={t("music.prevRelease")}>
                                 <Image src={leftNav} alt={t("music.leftArrowAlt")} width={20} height={20} />
                             </button>

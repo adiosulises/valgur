@@ -76,6 +76,7 @@
   "shows": {
     "tickets": "Tickets",
     "withGuest": "Con",
+    "noShows": "Valgur no tiene shows programados por ahora, ¡contrátanos!",
     "contact": "Contacto",
     "bookingUsEu": "Booking US / EU",
     "bookingMxLatam": "Booking MX / Latam"
