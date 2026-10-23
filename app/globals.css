@@ -131,6 +131,15 @@
   }
 }
 
+/* iOS: white behind the status bar / over-scroll area, and keep content out from under the side notch in landscape */
+html {
+  background-color: #fff;
+}
+body {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
 /* Font override — outside @layer so it beats Tailwind utility classes */
 body {
   font-family: "DIN Next", DIN, Bahnschrift, var(--font-barlow), "Helvetica Neue", Arial, sans-serif;

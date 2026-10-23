@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Barlow } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -18,6 +18,15 @@ const barlow = Barlow({
   variable: "--font-barlow",
   display: "swap",
 });
+
+// viewport-fit=cover lets the page (and the navbar's white background) extend under the iPhone
+// notch / Dynamic Island; theme-color tints the status bar area to match.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#ffffff",
+};
 
 export const metadata: Metadata = {
   title: "Valgur",

@@ -51,7 +51,7 @@ export default function Navbar() {
   }, [open]);
 
   return (
-    <header className="w-full sticky top-0 z-40 bg-white border-b-1 border-[#FF0084]">
+    <header className="w-full sticky top-0 z-40 bg-white border-b-1 border-[#FF0084] pt-[env(safe-area-inset-top)]">
       <nav className="w-full px-[8%] py-4">
 
         {/* Desktop */}
