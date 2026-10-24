@@ -262,7 +262,7 @@ export function Hero({ hero }: { hero: HeroData }) {
                 <div className="flex flex-col gap-3">
                     <h1 className={`${TITLE_SIZE} font-bold uppercase break-words leading-[0.9]`}>{text.title}</h1>
                     {text.date && (
-                        <p className="font-mono text-sm uppercase tracking-[0.2em]">{text.date}</p>
+                        <p className="font-mono text-sm tracking-[0.2em]">{text.date}</p>
                     )}
                 </div>
 
