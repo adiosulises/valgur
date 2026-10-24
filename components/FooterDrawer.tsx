@@ -23,8 +23,8 @@ export function FooterDrawer({ atencion, privacidad }: { atencion: Doc; privacid
       {/* Backdrop */}
       <div
         onClick={close}
-        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ${
-          active ? "opacity-100" : "opacity-0 pointer-events-none"
+        className={`fixed inset-0 z-40 bg-black/50 transition-[opacity,display] transition-discrete duration-300 starting:opacity-0 ${
+          active ? "opacity-100" : "opacity-0 hidden"
         }`}
       />
 

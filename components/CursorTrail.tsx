@@ -156,10 +156,12 @@ export function CursorTrail() {
   }, [pathname]);
 
   // z-[10000]: above everything, including the loading screen (z-[9999]).
+  // Gone entirely on touch devices (display: none): iOS 26 Safari tints the Dynamic Island area from
+  // fixed elements at the top edge, and an invisible full-screen layer there makes it look transparent.
   return (
     <canvas
       ref={canvasRef}
-      className="pointer-events-none fixed inset-0 z-[10000]"
+      className="pointer-events-none fixed inset-0 z-[10000] [@media(pointer:coarse)]:hidden"
       aria-hidden="true"
     />
   );
