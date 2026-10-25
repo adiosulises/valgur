@@ -45,10 +45,8 @@ export default async function Home() {
 
   // getArticles para videos musicales -> mostrar solo 1, randomizado, priorizando tags 'destacado'
   const rawVideos = await getArticlesByBlogHandle('videos');
-  console.log("rawVideos:", rawVideos); 
   const destacados = rawVideos.filter(hasDestacadoTag);
   const videos = destacados.length > 0 ? destacados : rawVideos;
-  console.log("videos pool:", videos);
 
   return (
     <>

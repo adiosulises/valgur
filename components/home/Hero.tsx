@@ -141,6 +141,7 @@ export function Hero({ hero }: { hero: HeroData }) {
     }, [hero.images]);
 
     const hoverRef = useRef<HTMLDivElement | null>(null);
+    const pointerTypeRef = useRef("mouse");
     const peekRef = useRef(false);
     peekRef.current = peek;
 
@@ -215,11 +216,20 @@ export function Hero({ hero }: { hero: HeroData }) {
                                 <div
                                     ref={hoverRef}
                                     data-trail-below
-                                    className="absolute inset-0 cursor-crosshair"
-                                    onMouseEnter={() => setPeek(true)}
-                                    onMouseLeave={() => setPeek(false)}
+                                    className="absolute inset-0 cursor-crosshair touch-manipulation"
+                                    onPointerDown={(e) => {
+                                        pointerTypeRef.current = e.pointerType;
+                                    }}
+                                    // Hover is for a real mouse only. A phone tap also sends emulated mouse-enter events,
+                                    // which used to reveal the photo and then get toggled straight back off by the tap.
+                                    onPointerEnter={(e) => {
+                                        if (e.pointerType === "mouse") setPeek(true);
+                                    }}
+                                    onPointerLeave={(e) => {
+                                        if (e.pointerType === "mouse") setPeek(false);
+                                    }}
                                     onClick={() => {
-                                        if (window.matchMedia("(hover: none)").matches) setPeek((p) => !p);
+                                        if (pointerTypeRef.current !== "mouse") setPeek((p) => !p);
                                     }}
                                 >
                                     {/* The real image stays fully opaque underneath... */}
@@ -260,7 +270,7 @@ export function Hero({ hero }: { hero: HeroData }) {
                 <p className="font-mono text-xs uppercase tracking-[0.2em] opacity-60">{t("hero.latest")}</p>
 
                 <div className="flex flex-col gap-3">
-                    <h1 className={`${TITLE_SIZE} font-bold uppercase break-words leading-[0.9]`}>{text.title}</h1>
+                    <h1 className={`${TITLE_SIZE} font-bold break-words leading-[0.9]`}>{text.title}</h1>
                     {text.date && (
                         <p className="font-mono text-sm tracking-[0.2em]">{text.date}</p>
                     )}
@@ -278,7 +288,7 @@ export function Hero({ hero }: { hero: HeroData }) {
                     <a
                         href={href}
                         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                        className="w-fit border bg-[#FF0084] text-white px-6 py-3 font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase hover:opacity-90 transition-opacity"
+                        className="w-full md:w-fit text-center border bg-[#FF0084] text-white px-6 py-3 font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase hover:opacity-90 transition-opacity"
                     >
                         {text.buttonLabel} &rarr;
                     </a>

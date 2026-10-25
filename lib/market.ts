@@ -7,3 +7,9 @@ export async function getCountry(): Promise<Country> {
   const lang = (await cookies()).get("lang")?.value;
   return lang === "EN" ? "US" : "MX";
 }
+
+// Server-side twin of the client LocaleContext: same "lang" cookie, Spanish by default.
+export async function getLang(): Promise<"ES" | "EN"> {
+  const lang = (await cookies()).get("lang")?.value;
+  return lang === "EN" ? "EN" : "ES";
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
 import { useLocale } from "@/contexts/LocaleContext";
@@ -27,14 +27,27 @@ export function CartSidebar() {
     };
   }, [isOpen]);
 
+  const [checkingOut, setCheckingOut] = useState(false);
+  const [checkoutFailed, setCheckoutFailed] = useState(false);
+
   const checkout = async () => {
-    const res = await fetch ("/api/checkout", {
-      method: "POST",
-      body: JSON.stringify({ items }),
-    });
-    const { url } = await res.json();
-    if (url) window.location.href=url;
-  }
+    if (checkingOut) return;
+    setCheckingOut(true);
+    setCheckoutFailed(false);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      });
+      const { url } = await res.json();
+      if (!res.ok || !url) throw new Error("checkout failed");
+      window.location.href = url;
+    } catch {
+      setCheckoutFailed(true);
+      setCheckingOut(false);
+    }
+  };
 
   return (
     <>
@@ -125,12 +138,16 @@ export function CartSidebar() {
               </span>
             </p>
           )}
+          {checkoutFailed && (
+            <p role="alert" className="mb-2 text-sm">{t("cart.checkoutError")}</p>
+          )}
           <button
             onClick={checkout}
             type="button"
-            className="border text-[#FF0084] bg-white w-full px-4 py-2 font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase"
+            disabled={checkingOut || items.length === 0}
+            className="border text-[#FF0084] bg-white w-full px-4 py-2 font-bold italic text-[20px] leading-none tracking-normal cursor-pointer uppercase disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {t("cart.checkout")}
+            {checkingOut ? t("cart.checkingOut") : t("cart.checkout")}
           </button>
         </div>
       </aside>

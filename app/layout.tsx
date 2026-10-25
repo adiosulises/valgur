@@ -9,6 +9,10 @@ import { CartSidebar } from "@/components/cart/CartSidebar";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { TopProgress } from "@/components/TopProgress";
 import { CursorTrail } from "@/components/CursorTrail";
+import { getLang } from "@/lib/market";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, OG_DESCRIPTION, KEYWORDS, INSTAGRAM_URL } from "@/lib/site";
+import es from "@/messages/es.json";
+import en from "@/messages/en.json";
 
 // Open-source DIN-style webfont; the CSS font stack tries real DIN / Bahnschrift first.
 const barlow = Barlow({
@@ -28,18 +32,61 @@ export const viewport: Viewport = {
   themeColor: "#ffffff",
 };
 
-export const metadata: Metadata = {
-  title: "Valgur",
-  description: "",
+export async function generateMetadata(): Promise<Metadata> {
+  const lang = await getLang();
+  const description = SITE_DESCRIPTION[lang];
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: { default: `${SITE_NAME} — ${lang === "ES" ? "Dúo pop" : "Pop duo"}`, template: `%s | ${SITE_NAME}` },
+    description,
+    keywords: KEYWORDS,
+    applicationName: SITE_NAME,
+    authors: [{ name: SITE_NAME }],
+    alternates: { canonical: "/" },
+    openGraph: {
+      type: "website",
+      siteName: SITE_NAME,
+      title: SITE_NAME,
+      description: OG_DESCRIPTION[lang],
+      url: "/",
+      locale: lang === "ES" ? "es_MX" : "en_US",
+    },
+    twitter: { card: "summary_large_image", title: SITE_NAME, description: OG_DESCRIPTION[lang] },
+    robots: { index: true, follow: true },
+  };
+}
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "MusicGroup",
+      "@id": `${SITE_URL}/#band`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      genre: "Pop",
+      image: `${SITE_URL}/opengraph-image`,
+      sameAs: [INSTAGRAM_URL],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      publisher: { "@id": `${SITE_URL}/#band` },
+    },
+  ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const lang = await getLang();
+  const skip = (lang === "ES" ? es : en).a11y.skipToContent;
   return (
-    <html lang="en" className={barlow.variable}>
+    <html lang={lang === "ES" ? "es" : "en"} className={barlow.variable}>
       <head>
         <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -49,13 +96,18 @@ export default function RootLayout({
         <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body className="antialiased flex flex-col min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+        />
+        <a href="#main" className="skip-link">{skip}</a>
         <LoadingScreen />
         <TopProgress />
         <CursorTrail />
         <LocaleProvider>
           <CartProvider>
             <Navbar />
-            <main className="flex-grow flex flex-col">{children}</main>
+            <main id="main" tabIndex={-1} className="flex-grow flex flex-col outline-none">{children}</main>
             <Footer />
             <CartSidebar />
           </CartProvider>

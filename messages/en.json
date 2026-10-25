@@ -8,6 +8,7 @@
     "bio": "Bio",
     "openCart": "Open cart",
     "toggleMenu": "Toggle menu",
+    "developedBy": "Developed by Orgonon LLC © {year}",
     "cartIconAlt": "Cart"
   },
   "footer": {
@@ -73,7 +74,9 @@
     "increment": "Increase",
     "incrementGlyph": "+",
     "total": "Total",
-    "checkout": "Checkout"
+    "checkout": "Checkout",
+    "checkingOut": "Loading...",
+    "checkoutError": "We couldn't start checkout. Please try again."
   },
   "shows": {
     "tickets": "Tickets",
@@ -97,6 +100,17 @@
   },
   "hero": {
     "latest": "Latest release"
+  },
+  "a11y": {
+    "skipToContent": "Skip to content"
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The page you're looking for doesn't exist or was moved.",
+    "backHome": "Back to home",
+    "errorTitle": "Something went wrong",
+    "errorBody": "An unexpected error occurred. Please try again.",
+    "retry": "Try again"
   },
   "meta": {
     "title": "Valgur",

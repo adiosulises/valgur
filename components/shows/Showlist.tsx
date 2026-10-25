@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ShopifyArticle } from "@/lib/shopify";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useState } from "react";
+import { TourBus } from "@/components/shows/TourBus";
 
 type Guest = { name: string; symbol: string };
 
@@ -92,9 +93,12 @@ export function Showlist({ shows }: { shows: ShopifyArticle[] }) {
   return (
     <>
       <div className="flex flex-col flex-1 w-full">
-        <div className="flex flex-col px-[8%] py-12">
+        <div className={`flex flex-col px-[8%] py-12 ${upcoming.length === 0 ? "flex-1 items-center justify-center gap-8 text-center" : ""}`}>
           {upcoming.length === 0 && (
-            <p className="text-[clamp(0.75rem,4vw,1.25rem)]">{t("shows.noShows")}</p>
+            <>
+              <p className="text-[clamp(0.75rem,4vw,1.25rem)]">{t("shows.noShows")}</p>
+              <TourBus />
+            </>
           )}
           {upcoming.map((show, i) => {
             const strike = show.agotado ? "line-through" : "";

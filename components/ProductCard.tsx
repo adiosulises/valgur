@@ -32,6 +32,7 @@ export function ProductCard({product} : {product : ShopifyProduct}){
                         src={image.url}
                         alt={image.altText || product.title}
                         fill
+                        sizes="(max-width: 768px) 50vw, 25vw"
                         className="object-contain transition-transform duration-500 group-hover/card:scale-110"
                     />
                     ) : (

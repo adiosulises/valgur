@@ -8,6 +8,7 @@
     "bio": "Bio",
     "openCart": "Abrir carrito",
     "toggleMenu": "Alternar menú",
+    "developedBy": "Desarrollado por Orgonon LLC © {year}",
     "cartIconAlt": "Carrito"
   },
   "footer": {
@@ -73,12 +74,14 @@
     "increment": "Sumar",
     "incrementGlyph": "+",
     "total": "Total",
-    "checkout": "Checkout"
+    "checkout": "Checkout",
+    "checkingOut": "Cargando...",
+    "checkoutError": "No pudimos iniciar el pago. Intenta de nuevo."
   },
   "shows": {
     "tickets": "Tickets",
     "withGuest": "Con",
-    "noShows": "Valgur no tiene shows programados por ahora, ¡contrátanos!",
+    "noShows": "Valgur no tiene shows programados por ahora, ¡Contrátanos!",
     "contact": "Contacto",
     "bookingUsEu": "Booking US / EU",
     "bookingMxLatam": "Booking MX / Latam"
@@ -97,6 +100,17 @@
   },
   "hero": {
     "latest": "Último lanzamiento"
+  },
+  "a11y": {
+    "skipToContent": "Saltar al contenido"
+  },
+  "errors": {
+    "notFoundTitle": "Página no encontrada",
+    "notFoundBody": "La página que buscas no existe o fue movida.",
+    "backHome": "Volver al inicio",
+    "errorTitle": "Algo salió mal",
+    "errorBody": "Ocurrió un error inesperado. Intenta de nuevo.",
+    "retry": "Reintentar"
   },
   "meta": {
     "title": "Valgur",

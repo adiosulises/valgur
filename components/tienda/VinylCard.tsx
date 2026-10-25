@@ -27,6 +27,7 @@ export function VinylCard({ vinyl }: { vinyl: Vinyl }) {
             src={vinyl.image}
             alt={t("product.vinylTitlePrefix") + vinyl.title}
             fill
+            sizes="(max-width: 768px) 50vw, 25vw"
             className="object-contain"
           />
         ) : (

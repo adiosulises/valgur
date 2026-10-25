@@ -127,7 +127,7 @@ export default function Navbar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white p-6 md:hidden
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white p-6 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-[calc(1.5rem+env(safe-area-inset-bottom))] md:hidden flex flex-col
           transform transition-transform duration-300
           ${open ? "translate-x-0" : "-translate-x-full"}
           h-dvh overflow-y-auto`}
@@ -141,6 +141,10 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
+
+        <p className="mt-auto pt-4 border-t border-[#FF0084] text-xs opacity-60">
+          {t("nav.developedBy", { year: new Date().getFullYear() })}
+        </p>
       </aside>
     </header>
   );
